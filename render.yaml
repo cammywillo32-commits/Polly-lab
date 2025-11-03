@@ -51,7 +51,7 @@ services:
           type: redis
           property: connectionString
 
-  - type: redis
+  - type: key-value
     name: polly-redis
     plan: free
     ipAllowList:
