@@ -55,5 +55,4 @@ services:
     name: polly-redis
     plan: free
     ipAllowList:
-      - source: polly-api
-      - source: polly-worker
+      - source: 0.0.0.0/0
