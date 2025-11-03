@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: polly-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api_main:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService: { name: polly-redis, type: redis, property: connectionString }
+      - key: CELERY_RESULT_BACKEND
+        fromService: { name: polly-redis, type: redis, property: connectionString }
+
+  - type: worker
+    name: polly-worker
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A workers.tasks worker --loglevel=INFO
+    autoDeploy: true
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService: { name: polly-redis, type: redis, property: connectionString }
+      - key: CELERY_RESULT_BACKEND
+        fromService: { name: polly-redis, type: redis, property: connectionString }
+
+  - type: web
+    name: polly-ui
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    autoDeploy: true
+    envVars:
+      - key: API_URL
+        fromService: { name: polly-api, type: web, property: url }
+
+  - type: redis
+    name: polly-redis
+    plan: free
+    ipAllowList: []
