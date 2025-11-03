@@ -54,3 +54,6 @@ services:
   - type: redis
     name: polly-redis
     plan: free
+    ipAllowList:
+      - source: polly-api
+      - source: polly-worker
