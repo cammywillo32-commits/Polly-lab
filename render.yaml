@@ -1,5 +1,5 @@
 services:
-  - type: web
+  - type: redis
     name: polly-ui
     env: python
     plan: free
